@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentMap;
 public class Bus implements Observable {
     /**
      * key —— receiveType
-     * value —— observers which can consume the timing of receiveType
+     * value —— observers which can consume the event of receiveType
      */
     private final ConcurrentMap<Class<?>, LinkedHashSet<Observer<?>>> observers = new ConcurrentHashMap<>();
     /**
@@ -54,10 +54,11 @@ public class Bus implements Observable {
     }
 
     public void post(@NonNull Object event, boolean cache) {
+        Class<?> eventType = event.getClass();
         if (cache) {
-            cachedEvent.put(event.getClass(), event);
+            cachedEvent.put(eventType, event);
         }
-        Collection<Observer> observers = findObservers(event.getClass());
+        Collection<Observer> observers = findObservers(eventType);
         dispatchNewEvent(observers, event);
     }
 
