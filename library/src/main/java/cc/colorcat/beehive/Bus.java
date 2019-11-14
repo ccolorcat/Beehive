@@ -87,7 +87,9 @@ public class Bus implements Observable {
             this.observers.put(receiveType, obs);
         }
         boolean result = obs.add(observer);
-        Utils.printLog(Log.VERBOSE, "register " + result + ":\n\t" + this.observers);
+        if (Utils.DEBUG) {
+            Utils.printLog(Log.VERBOSE, "register " + result + ":\n\t" + this.observers);
+        }
         if (result && receiveCached) {
             Collection<Object> cachedEvents = findCachedEvents(receiveType);
             dispatchCachedEvents(observer, cachedEvents);
@@ -107,7 +109,9 @@ public class Bus implements Observable {
             }
             result = true;
         }
-        Utils.printLog(Log.VERBOSE, "unregister " + result + ":\n\t" + this.observers);
+        if (Utils.DEBUG) {
+            Utils.printLog(Log.VERBOSE, "unregister " + result + ":\n\t" + this.observers);
+        }
         return result;
     }
 

@@ -31,7 +31,7 @@ import java.util.Collection;
  * GitHub: https://github.com/ccolorcat
  */
 class Utils {
-    private static final boolean DEBUG = true;
+    static final boolean DEBUG = BuildConfig.LOG_ENABLED;
     private static final String TAG = "Observable";
     private static final String METHOD_NAME_OBSERVER;
 
@@ -45,7 +45,9 @@ class Utils {
             }
         }
         METHOD_NAME_OBSERVER = methodName;
-        printLog(Log.VERBOSE, "init, found receive method name in Observer: " + METHOD_NAME_OBSERVER);
+        if (DEBUG) {
+            printLog(Log.VERBOSE, "init, found receive method name in Observer: " + METHOD_NAME_OBSERVER);
+        }
     }
 
     static Class findReceiveType(Observer observer) {
