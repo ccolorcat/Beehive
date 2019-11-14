@@ -100,8 +100,8 @@ class Utils {
 
     @SuppressWarnings("unchecked")
     static void batchDispatch(Collection<? extends Observer> observers, Object event) {
-        for (Observer observer : observers) {
-            observer.onReceive(event);
+        for (Observer ob : observers) {
+            ob.onReceive(event);
         }
     }
 

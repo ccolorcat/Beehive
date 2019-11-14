@@ -16,8 +16,6 @@
 
 package cc.colorcat.beehive;
 
-import android.os.Handler;
-
 import androidx.annotation.NonNull;
 
 import java.util.Collection;
@@ -30,31 +28,12 @@ import java.util.LinkedHashSet;
  * GitHub: https://github.com/ccolorcat
  */
 public class Subject<T> implements Observable<T> {
-    public static <T> Subject<T> create(@NonNull Producer<? extends T> producer) {
-        return new Subject<>(Utils.requireNonNull(producer, "producer == null"));
-    }
-
-    public static <T> Subject<T> create(@NonNull Handler deliverer, @NonNull Producer<? extends T> producer) {
-        Utils.requireNonNull(producer, "producer == null");
-        Utils.requireNonNull(deliverer, "deliverer == null");
-        return new HandlerSubject<>(deliverer, producer);
-    }
-
     private final LinkedHashSet<Observer<? super T>> observers = new LinkedHashSet<>();
     private final Producer<? extends T> producer;
     private volatile T cachedEvent;
 
     public Subject(@NonNull Producer<? extends T> producer) {
         this.producer = Utils.requireNonNull(producer, "producer == null");
-    }
-
-    @NonNull
-    public T get() {
-        return updateAndCache();
-    }
-
-    public T getCached() {
-        return cachedEvent;
     }
 
     @Override
@@ -82,6 +61,7 @@ public class Subject<T> implements Observable<T> {
         }
     }
 
+    @Override
     public void clear() {
         synchronized (observers) {
             cachedEvent = null;
@@ -89,13 +69,22 @@ public class Subject<T> implements Observable<T> {
         }
     }
 
+    @NonNull
+    public T get() {
+        return produceAndCache();
+    }
+
+    public T getCached() {
+        return cachedEvent;
+    }
+
     public void notifyChanged() {
         synchronized (observers) {
-            dispatch(observers, updateAndCache());
+            dispatch(observers, produceAndCache());
         }
     }
 
-    private T updateAndCache() {
+    private T produceAndCache() {
         T result = Utils.requireNonNull(producer.produce(), "produce returned null");
         cachedEvent = result;
         return result;

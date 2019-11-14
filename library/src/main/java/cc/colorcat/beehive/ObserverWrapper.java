@@ -26,14 +26,14 @@ import androidx.lifecycle.LifecycleOwner;
  * Date: 2019-11-13
  * GitHub: https://github.com/ccolorcat
  */
-class ObserverWrapper<T> implements LifecycleEventObserver {
+final class ObserverWrapper<T> implements LifecycleEventObserver {
     private final Observable<T> observable;
     private final boolean receiveCached;
     private final Timing timing;
     private final Observer<? super T> observer;
 
     ObserverWrapper(@NonNull Observable<T> observable, boolean receiveCached, @NonNull Timing timing, @NonNull Observer<? super T> observer) {
-        this.observable = observable;
+        this.observable = Utils.requireNonNull(observable, "observable == null");
         this.receiveCached = receiveCached;
         this.timing = Utils.requireNonNull(timing, "timing == null");
         this.observer = Utils.requireNonNull(observer, "observer == null");
@@ -41,9 +41,9 @@ class ObserverWrapper<T> implements LifecycleEventObserver {
 
     @Override
     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
-        if (event.equals(this.timing.register)) {
+        if (event.equals(timing.register)) {
             observable.register(receiveCached, observer);
-        } else if (event.equals(this.timing.unregister)) {
+        } else if (event.equals(timing.unregister)) {
             observable.unregister(observer);
         }
     }

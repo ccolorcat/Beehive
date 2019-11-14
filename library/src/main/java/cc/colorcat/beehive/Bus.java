@@ -81,13 +81,13 @@ public class Bus implements Observable {
     public boolean register(boolean receiveCached, @NonNull Observer observer) {
         Utils.requireNonNull(observer, "observer == null");
         Class<?> receiveType = Utils.findReceiveType(observer);
-        LinkedHashSet<Observer<?>> observers = this.observers.get(receiveType);
-        if (observers == null) {
-            observers = new LinkedHashSet<>();
-            this.observers.put(receiveType, observers);
+        LinkedHashSet<Observer<?>> obs = this.observers.get(receiveType);
+        if (obs == null) {
+            obs = new LinkedHashSet<>();
+            this.observers.put(receiveType, obs);
         }
-        boolean result = observers.add(observer);
-        Utils.printLog(Log.VERBOSE, "register: " + this.observers);
+        boolean result = obs.add(observer);
+        Utils.printLog(Log.VERBOSE, "register " + result + ":\n\t" + this.observers);
         if (result && receiveCached) {
             Collection<Object> cachedEvents = findCachedEvent(receiveType);
             dispatchCachedEvents(observer, cachedEvents);
