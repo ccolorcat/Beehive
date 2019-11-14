@@ -47,7 +47,7 @@ public abstract class LifeObserver<T> extends TypedObserver<T> implements Lifecy
         this(null, receiveCached, null, timing);
     }
 
-    protected LifeObserver(Observable<T> observable, boolean receiveCached, Class<? super T> receiveType, @NonNull Timing timing) {
+    protected LifeObserver(Observable<T> observable, boolean receiveCached, Class<? extends T> receiveType, @NonNull Timing timing) {
         super(receiveType);
         this.observable = observable;
         this.receiveCached = receiveCached;

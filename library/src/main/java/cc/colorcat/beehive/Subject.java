@@ -44,8 +44,8 @@ public class Subject<T> implements Observable<T> {
     @Override
     public boolean register(boolean receiveCached, @NonNull Observer<? super T> observer) {
         Utils.requireNonNull(observer, "observer == null");
-        synchronized (observers) {
-            boolean result = observers.add(observer);
+        synchronized (this.observers) {
+            boolean result = this.observers.add(observer);
             if (receiveCached && result && cachedEvent != null) {
                 dispatch(Collections.singletonList(observer), cachedEvent);
             }
@@ -56,8 +56,8 @@ public class Subject<T> implements Observable<T> {
     @Override
     public boolean unregister(@NonNull Observer<? super T> observer) {
         Utils.requireNonNull(observer, "observer == null");
-        synchronized (observers) {
-            return observers.remove(observer);
+        synchronized (this.observers) {
+            return this.observers.remove(observer);
         }
     }
 

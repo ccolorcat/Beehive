@@ -89,7 +89,7 @@ public class Bus implements Observable {
         boolean result = obs.add(observer);
         Utils.printLog(Log.VERBOSE, "register " + result + ":\n\t" + this.observers);
         if (result && receiveCached) {
-            Collection<Object> cachedEvents = findCachedEvent(receiveType);
+            Collection<Object> cachedEvents = findCachedEvents(receiveType);
             dispatchCachedEvents(observer, cachedEvents);
         }
         return result;
@@ -107,7 +107,7 @@ public class Bus implements Observable {
             }
             result = true;
         }
-        Utils.printLog(Log.VERBOSE, "unregister: " + this.observers);
+        Utils.printLog(Log.VERBOSE, "unregister " + result + ":\n\t" + this.observers);
         return result;
     }
 
@@ -117,14 +117,14 @@ public class Bus implements Observable {
         cachedEvent.evictAll();
     }
 
-    private Collection<Object> findCachedEvent(@NonNull Class<?> receiveType) {
-        Collection<Object> cachedEvent = new LinkedList<>();
+    private Collection<Object> findCachedEvents(@NonNull Class<?> receiveType) {
+        Collection<Object> cachedEvents = new LinkedList<>();
         for (Map.Entry<Class<?>, Object> entry : this.cachedEvent.snapshot().entrySet()) {
             if (receiveType.isAssignableFrom(entry.getKey())) {
-                cachedEvent.add(entry.getValue());
+                cachedEvents.add(entry.getValue());
             }
         }
-        return cachedEvent;
+        return cachedEvents;
     }
 
     protected void dispatchNewEvent(@NonNull final Collection<Observer> observers, @NonNull final Object newEvent) {

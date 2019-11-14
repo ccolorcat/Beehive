@@ -22,9 +22,9 @@ package cc.colorcat.beehive;
  * GitHub: https://github.com/ccolorcat
  */
 public abstract class TypedObserver<T> extends Observer<T> {
-    protected final Class<? super T> receiveType;
+    protected final Class<? extends T> receiveType;
 
-    protected TypedObserver(Class<? super T> receiveType) {
+    protected TypedObserver(Class<? extends T> receiveType) {
         this.receiveType = receiveType;
     }
 }
