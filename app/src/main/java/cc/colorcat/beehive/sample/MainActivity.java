@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,37 +22,15 @@ import cc.colorcat.beehive.Observer;
 import cc.colorcat.beehive.Producer;
 
 public class MainActivity extends AppCompatActivity {
+    private String[] mGiftName = {"apple", "pencil", "book", "phone", "computer"};
+    private int mIndex = 0;
     private HandlerSubject<Gift> mSubject = new HandlerSubject<>(new Handler(Looper.getMainLooper()), new Producer<Gift>() {
-        private String[] mGiftName = {"apple", "pencil", "book", "phone", "computer"};
-        private int mIndex = 0;
-        private volatile Gift mGift;
-
         @NonNull
         @Override
         public Gift produce() {
-            if (mGift == null) {
-                startProduce();
-                return new Gift(mGiftName[0]);
-            }
-            return mGift;
-        }
-
-        private void startProduce() {
-            new Thread("mGift producer") {
-                @Override
-                public void run() {
-                    while (!MainActivity.this.isFinishing()) {
-                        mIndex = (mIndex + 1) % mGiftName.length;
-                        Log.d("Observable", "index: " + mIndex);
-                        mGift = new Gift(mGiftName[mIndex]);
-                        mSubject.notifyChanged();
-                        SystemClock.sleep(3000L);
-                    }
-                }
-            }.start();
+            return new Gift(mGiftName[mIndex]);
         }
     });
-
 
     private List<Message> mMessages = new ArrayList<>();
     private RecyclerView.Adapter<MsgBoxHolder> mAdapter = new RecyclerView.Adapter<MsgBoxHolder>() {
@@ -95,14 +72,26 @@ public class MainActivity extends AppCompatActivity {
         GlobalBus.get().bind(true, this, mTomMsgBoxObserver);
         mSubject.bind(this, mTomGiftObserver);
 
+        startProduce();
+
         mJerryMsgBox = findViewById(R.id.et_jerry_message_box);
         findViewById(R.id.iv_jerry).setOnClickListener(mClick);
         GlobalBus.get().bind(this, mJerryMsgBoxObserver);
-        mSubject.bind(this, mJerryGiftObserver);
-
-        mSubject.get();
+        mSubject.bind(true, this, mJerryGiftObserver);
     }
 
+    private void startProduce() {
+        new Thread("produce gift") {
+            @Override
+            public void run() {
+                while (!MainActivity.this.isFinishing()) {
+                    mIndex = (mIndex + 1) % mGiftName.length;
+                    mSubject.notifyChanged();
+                    SystemClock.sleep(3000);
+                }
+            }
+        }.start();
+    }
 
     private View.OnClickListener mClick = new View.OnClickListener() {
 
