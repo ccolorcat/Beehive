@@ -19,18 +19,15 @@ package cc.colorcat.beehive.sample;
 /**
  * Author: cxx
  * Date: 2019-11-15
- * GitHub: https://github.com/ccolorcat
  */
-public class Message {
+public class Gift {
     private String name;
-    private String content;
 
-    public Message() {
+    public Gift() {
     }
 
-    public Message(String name, String content) {
+    public Gift(String name) {
         this.name = name;
-        this.content = content;
     }
 
     public String getName() {
@@ -41,23 +38,10 @@ public class Message {
         this.name = name;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String said() {
-        return name + " said: " + content;
-    }
-
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
+        return "Gift{" +
                 "name='" + name + '\'' +
-                ", content='" + content + '\'' +
                 '}';
     }
 }

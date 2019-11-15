@@ -16,36 +16,23 @@
 
 package cc.colorcat.beehive.sample;
 
+import android.util.TypedValue;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
  * Author: cxx
- * Date: 2019-11-14
- * GitHub: https://github.com/ccolorcat
+ * Date: 2019-11-15
  */
-public class Cheese {
-    private int price;
-    private String message;
+public class MsgBoxHolder extends RecyclerView.ViewHolder {
+    public final TextView textView;
 
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public String toString() {
-        return "Cheese{" +
-                "price=" + price +
-                ", message='" + message + '\'' +
-                '}';
+    public MsgBoxHolder(@NonNull View itemView) {
+        super(itemView);
+        textView = itemView.findViewById(android.R.id.text1);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
     }
 }
