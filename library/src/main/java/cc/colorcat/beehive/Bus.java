@@ -22,9 +22,11 @@ import android.util.LruCache;
 import androidx.annotation.NonNull;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -38,7 +40,7 @@ public class Bus implements Observable {
      * key —— receiveType
      * value —— observers which can consume the event of receiveType
      */
-    private final ConcurrentMap<Class<?>, LinkedHashSet<Observer<?>>> observers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<?>, Set<Observer<?>>> observers = new ConcurrentHashMap<>();
     /**
      * key —— eventType
      * value —— the instance of eventType
@@ -63,13 +65,13 @@ public class Bus implements Observable {
     }
 
     private Collection<Observer> findObservers(@NonNull Class<?> eventType) {
-        Collection<Observer> observers = new LinkedList<>();
-        for (Map.Entry<Class<?>, LinkedHashSet<Observer<?>>> entry : this.observers.entrySet()) {
+        Collection<Observer> obs = new LinkedList<>();
+        for (Map.Entry<Class<?>, Set<Observer<?>>> entry : this.observers.entrySet()) {
             if (entry.getKey().isAssignableFrom(eventType)) {
-                observers.addAll(entry.getValue());
+                obs.addAll(entry.getValue());
             }
         }
-        return observers;
+        return obs;
     }
 
     @Override
@@ -81,9 +83,9 @@ public class Bus implements Observable {
     public boolean register(boolean receiveCached, @NonNull Observer observer) {
         Utils.requireNonNull(observer, "observer == null");
         Class<?> receiveType = Utils.findReceiveType(observer);
-        LinkedHashSet<Observer<?>> obs = this.observers.get(receiveType);
+        Set<Observer<?>> obs = this.observers.get(receiveType);
         if (obs == null) {
-            obs = new LinkedHashSet<>();
+            obs = Collections.synchronizedSet(new LinkedHashSet<Observer<?>>());
             this.observers.put(receiveType, obs);
         }
         boolean result = obs.add(observer);
@@ -102,9 +104,9 @@ public class Bus implements Observable {
         Utils.requireNonNull(observer, "observer == null");
         boolean result = false;
         Class<?> receiveType = Utils.findReceiveType(observer);
-        LinkedHashSet<Observer<?>> observerSet = this.observers.get(receiveType);
-        if (observerSet != null && observerSet.remove(observer)) {
-            if (observerSet.isEmpty()) {
+        Set<Observer<?>> obs = this.observers.get(receiveType);
+        if (obs != null && obs.remove(observer)) {
+            if (obs.isEmpty()) {
                 this.observers.remove(receiveType);
             }
             result = true;
