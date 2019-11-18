@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -34,24 +32,7 @@ public class MainActivity extends AppCompatActivity {
     });
 
     private List<Message> mMessages = new ArrayList<>();
-    private RecyclerView.Adapter<MsgBoxHolder> mAdapter = new RecyclerView.Adapter<MsgBoxHolder>() {
-        @NonNull
-        @Override
-        public MsgBoxHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_simple_text, parent, false);
-            return new MsgBoxHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull MsgBoxHolder holder, int position) {
-            holder.textView.setText(mMessages.get(position).said());
-        }
-
-        @Override
-        public int getItemCount() {
-            return mMessages.size();
-        }
-    };
+    private RecyclerView.Adapter mAdapter = new MsgBoxAdapter(mMessages);
 
     private EditText mTomMsgBox;
     private EditText mJerryMsgBox;
