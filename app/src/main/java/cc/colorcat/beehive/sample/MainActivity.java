@@ -1,9 +1,6 @@
 package cc.colorcat.beehive.sample;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.SystemClock;
 import android.view.View;
 import android.widget.EditText;
 
@@ -15,21 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.colorcat.beehive.HandlerSubject;
 import cc.colorcat.beehive.Observer;
-import cc.colorcat.beehive.Producer;
 
 public class MainActivity extends AppCompatActivity {
-    private boolean mContinueGift = true;
-    private String[] mGiftName = {"apple", "pencil", "book", "phone", "computer"};
-    private int mIndex = 0;
-    private HandlerSubject<Gift> mSubject = new HandlerSubject<>(new Handler(Looper.getMainLooper()), new Producer<Gift>() {
-        @NonNull
-        @Override
-        public Gift produce() {
-            return new Gift(mGiftName[mIndex]);
-        }
-    });
+    private GiftSubject mSubject = new GiftSubject();
 
     private List<Message> mMessages = new ArrayList<>();
     private RecyclerView.Adapter mAdapter = new MsgBoxAdapter(mMessages);
@@ -54,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         GlobalBus.get().bind(true, this, mTomMsgBoxObserver);
         mSubject.bind(this, mTomGiftObserver);
 
-        startProduce();
+        mSubject.startProduce();
 
         mJerryMsgBox = findViewById(R.id.et_jerry_message_box);
         findViewById(R.id.iv_jerry).setOnClickListener(mClick);
@@ -64,17 +50,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_stop).setOnClickListener(mClick);
     }
 
-    private void startProduce() {
-        new Thread("produce gift") {
-            @Override
-            public void run() {
-                while (mContinueGift && !MainActivity.this.isFinishing()) {
-                    mIndex = (mIndex + 1) % mGiftName.length;
-                    mSubject.notifyChanged();
-                    SystemClock.sleep(3000);
-                }
-            }
-        }.start();
+    @Override
+    protected void onDestroy() {
+        mSubject.stopProduce();
+        super.onDestroy();
     }
 
     private View.OnClickListener mClick = new View.OnClickListener() {
@@ -91,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     mJerryMsgBox.setText("");
                     break;
                 case R.id.btn_stop:
-                    mContinueGift = false;
+                    mSubject.stopProduce();
                     break;
                 default:
                     break;

@@ -32,6 +32,11 @@ import java.util.Collection;
 public class HandlerSubject<T> extends Subject<T> implements LifeObservable<T> {
     private final Handler handler;
 
+    public HandlerSubject(Handler handler) {
+        super();
+        this.handler = handler;
+    }
+
     public HandlerSubject(Handler handler, @NonNull Producer<? extends T> producer) {
         super(producer);
         this.handler = handler;
@@ -69,5 +74,13 @@ public class HandlerSubject<T> extends Subject<T> implements LifeObservable<T> {
                 }
             });
         }
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "HandlerSubject{" +
+                "handler=" + handler +
+                "} " + super.toString();
     }
 }

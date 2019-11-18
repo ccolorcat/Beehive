@@ -29,11 +29,14 @@ import java.util.LinkedHashSet;
  */
 public class Subject<T> implements Observable<T> {
     private final LinkedHashSet<Observer<? super T>> observers = new LinkedHashSet<>();
-    private final Producer<? extends T> producer;
+    private final Once<Producer<? extends T>> once = new Once<>();
     private volatile T cachedEvent;
 
+    public Subject() {
+    }
+
     public Subject(@NonNull Producer<? extends T> producer) {
-        this.producer = Utils.requireNonNull(producer, "producer == null");
+        setProducer(producer);
     }
 
     @Override
@@ -69,6 +72,10 @@ public class Subject<T> implements Observable<T> {
         }
     }
 
+    public void setProducer(@NonNull Producer<? extends T> producer) {
+        once.setValue(producer);
+    }
+
     @NonNull
     public T get() {
         return produceAndCache();
@@ -85,9 +92,9 @@ public class Subject<T> implements Observable<T> {
     }
 
     private T produceAndCache() {
-        T result = Utils.requireNonNull(producer.produce(), "produce returned null");
-        cachedEvent = result;
-        return result;
+        T newEvent = Utils.requireNonNull(once.getValue().produce(), "produce returned null");
+        cachedEvent = newEvent;
+        return newEvent;
     }
 
     protected void dispatch(@NonNull Collection<? extends Observer<? super T>> observers, @NonNull T event) {
@@ -99,7 +106,7 @@ public class Subject<T> implements Observable<T> {
     public String toString() {
         return "Subject{" +
                 "observers=" + observers +
-                ", producer=" + producer +
+                ", once=" + once +
                 ", cachedEvent=" + cachedEvent +
                 '}';
     }
