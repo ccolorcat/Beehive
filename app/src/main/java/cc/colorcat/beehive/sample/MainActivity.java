@@ -22,6 +22,7 @@ import cc.colorcat.beehive.Observer;
 import cc.colorcat.beehive.Producer;
 
 public class MainActivity extends AppCompatActivity {
+    private boolean mContinueGift = true;
     private String[] mGiftName = {"apple", "pencil", "book", "phone", "computer"};
     private int mIndex = 0;
     private HandlerSubject<Gift> mSubject = new HandlerSubject<>(new Handler(Looper.getMainLooper()), new Producer<Gift>() {
@@ -78,13 +79,15 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.iv_jerry).setOnClickListener(mClick);
         GlobalBus.get().bind(this, mJerryMsgBoxObserver);
         mSubject.bind(true, this, mJerryGiftObserver);
+
+        findViewById(R.id.btn_stop).setOnClickListener(mClick);
     }
 
     private void startProduce() {
         new Thread("produce gift") {
             @Override
             public void run() {
-                while (!MainActivity.this.isFinishing()) {
+                while (mContinueGift && !MainActivity.this.isFinishing()) {
                     mIndex = (mIndex + 1) % mGiftName.length;
                     mSubject.notifyChanged();
                     SystemClock.sleep(3000);
@@ -105,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.iv_jerry:
                     GlobalBus.get().post(new JerryMessage(mJerryMsgBox.getText().toString()));
                     mJerryMsgBox.setText("");
+                    break;
+                case R.id.btn_stop:
+                    mContinueGift = false;
                     break;
                 default:
                     break;

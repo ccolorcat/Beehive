@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2019 cxx
   ~
@@ -14,8 +15,6 @@
   ~ limitations under the License.
   -->
 
-<vector android:height="48dp" android:tint="#8F0005"
-    android:viewportHeight="24.0" android:viewportWidth="24.0"
-    android:width="48dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#FF000000" android:pathData="M6,6h12v12H6z"/>
-</vector>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="#FFFF1010" />
+</shape>

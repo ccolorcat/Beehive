@@ -70,12 +70,15 @@
         app:layout_constraintStart_toEndOf="@id/iv_tom"
         app:layout_constraintTop_toTopOf="@id/iv_tom" />
 
-    <View
+    <Button
         android:id="@+id/btn_stop"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginBottom="16dp"
-        android:background="#FF1010"
+        android:background="@drawable/ic_oval_red"
+        android:text="stop gift"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@id/et_tom_message_box"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -84,7 +87,7 @@
         android:id="@+id/rv_preview_message_box"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/bg_rectangle_grey_border"
         app:layout_constraintBottom_toTopOf="@id/btn_stop"
         app:layout_constraintTop_toTopOf="parent" />
