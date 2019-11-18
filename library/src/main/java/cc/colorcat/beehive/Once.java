@@ -30,7 +30,7 @@ final class Once<T> {
         if (this.value != null) {
             throw new IllegalStateException("the value has been set.");
         }
-        this.value = Utils.requireNonNull(value, "value is null.");
+        this.value = Utils.requireNonNull(value, "value == null");
     }
 
     @NonNull
