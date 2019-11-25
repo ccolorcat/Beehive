@@ -29,6 +29,7 @@ import java.util.Collection;
  * Date: 2019-11-13
  * GitHub: https://github.com/ccolorcat
  */
+@SuppressWarnings("unused")
 public class HandlerBus extends Bus implements LifeObservable {
     private final Handler handler;
 

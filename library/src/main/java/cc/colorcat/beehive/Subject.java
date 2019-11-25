@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
  * Date: 2019-11-13
  * GitHub: https://github.com/ccolorcat
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Subject<T> implements Observable<T> {
     private final LinkedHashSet<Observer<? super T>> observers = new LinkedHashSet<>();
     private final Once<Producer<? extends T>> once = new Once<>();

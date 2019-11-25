@@ -41,6 +41,7 @@ final class Once<T> {
         return value;
     }
 
+    @SuppressWarnings("EqualsReplaceableByObjectsCall")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

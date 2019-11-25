@@ -24,6 +24,7 @@ import androidx.lifecycle.LifecycleOwner;
  * Date: 2019-11-13
  * GitHub: https://github.com/ccolorcat
  */
+@SuppressWarnings("unused")
 public interface LifeObservable<T> extends Observable<T> {
     void bind(@NonNull LifecycleOwner owner, @NonNull Observer<? super T> observer);
 

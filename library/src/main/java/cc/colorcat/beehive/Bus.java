@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentMap;
  * Date: 2019-11-13
  * GitHub: https://github.com/ccolorcat
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Bus implements Observable {
     /**
      * key —— receiveType

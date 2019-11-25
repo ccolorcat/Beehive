@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
  * Date: 2019-11-13
  * GitHub: https://github.com/ccolorcat
  */
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public interface Observable<T> {
     boolean register(@NonNull Observer<? super T> observer);
 

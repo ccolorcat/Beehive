@@ -21,6 +21,7 @@ package cc.colorcat.beehive;
  * Date: 2019-11-13
  * GitHub: https://github.com/ccolorcat
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class TypedObserver<T> extends Observer<T> {
     protected final Class<? extends T> receiveType;
 

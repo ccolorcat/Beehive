@@ -24,6 +24,7 @@ import androidx.lifecycle.Lifecycle;
  * Date: 2019-11-13
  * GitHub: https://github.com/ccolorcat
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public final class Timing {
     public static final Timing CREATE_DESTROY = new Timing(Lifecycle.Event.ON_CREATE, Lifecycle.Event.ON_DESTROY);
     public static final Timing START_STOP = new Timing(Lifecycle.Event.ON_START, Lifecycle.Event.ON_STOP);

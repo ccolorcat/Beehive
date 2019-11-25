@@ -26,6 +26,7 @@ import androidx.lifecycle.LifecycleOwner;
  * Date: 2019-11-13
  * GitHub: https://github.com/ccolorcat
  */
+@SuppressWarnings({"SameParameterValue", "WeakerAccess", "unused"})
 public abstract class LifeObserver<T> extends TypedObserver<T> implements LifecycleEventObserver {
     protected Observable<T> observable;
     protected final boolean receiveCached;
