@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Message> mMessages = new ArrayList<>();
     private RecyclerView.Adapter mAdapter = new MsgBoxAdapter(mMessages);
 
-    private EditText mTomMsgBox;
-    private EditText mJerryMsgBox;
+    private EditText mTomMsgBoxEt;
+    private EditText mJerryMsgBoxEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,23 +31,22 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView previewMsgBox = findViewById(R.id.rv_preview_message_box);
         previewMsgBox.setLayoutManager(new LinearLayoutManager(this));
         previewMsgBox.setAdapter(mAdapter);
-        GlobalBus.get().bind(this, mPreviewMsgBoxObserver);
+        GlobalBus.get().bind(this, mPreviewMsgBox);
         GlobalBus.get().post(new TomMessage("Hi, Jerry, this is a box message."), true);
         GlobalBus.get().post(new JerryMessage("Hi, Tom, this is a box message."), true);
 
-        mTomMsgBox = findViewById(R.id.et_tom_message_box);
+        mTomMsgBoxEt = findViewById(R.id.et_tom_message_box);
         findViewById(R.id.iv_tom).setOnClickListener(mClick);
-        GlobalBus.get().bind(true, this, mTomMsgBoxObserver);
-        mSubject.bind(this, mTomGiftObserver);
+        GlobalBus.get().bind(true, this, mTomMsgBox);
+        mSubject.bind(this, mTomGiftBox);
 
-        mSubject.startProduce();
-
-        mJerryMsgBox = findViewById(R.id.et_jerry_message_box);
+        mJerryMsgBoxEt = findViewById(R.id.et_jerry_message_box);
         findViewById(R.id.iv_jerry).setOnClickListener(mClick);
-        GlobalBus.get().bind(this, mJerryMsgBoxObserver);
-        mSubject.bind(true, this, mJerryGiftObserver);
+        GlobalBus.get().bind(this, mJerryMsgBox);
+        mSubject.bind(true, this, mJerryGiftBox);
 
         findViewById(R.id.btn_stop).setOnClickListener(mClick);
+        mSubject.startProduce();
     }
 
     @Override
@@ -62,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.iv_tom:
-                    GlobalBus.get().post(new TomMessage(mTomMsgBox.getText().toString()));
-                    mTomMsgBox.setText("");
+                    GlobalBus.get().post(new TomMessage(mTomMsgBoxEt.getText().toString()));
+                    mTomMsgBoxEt.setText("");
                     break;
                 case R.id.iv_jerry:
-                    GlobalBus.get().post(new JerryMessage(mJerryMsgBox.getText().toString()));
-                    mJerryMsgBox.setText("");
+                    GlobalBus.get().post(new JerryMessage(mJerryMsgBoxEt.getText().toString()));
+                    mJerryMsgBoxEt.setText("");
                     break;
                 case R.id.btn_stop:
                     mSubject.stopProduce();
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private Observer<Message> mPreviewMsgBoxObserver = new Observer<Message>() {
+    private Observer<Message> mPreviewMsgBox = new Observer<Message>() {
         @Override
         public void onReceive(@NonNull Message event) {
             int size = mMessages.size();
@@ -87,33 +86,33 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private Observer<JerryMessage> mTomMsgBoxObserver = new Observer<JerryMessage>() {
+    private Observer<JerryMessage> mTomMsgBox = new Observer<JerryMessage>() {
         @Override
         public void onReceive(@NonNull JerryMessage event) {
-            mTomMsgBox.setText(event.getContent());
+            mTomMsgBoxEt.setText(event.getContent());
         }
     };
 
-    private Observer<Gift> mTomGiftObserver = new Observer<Gift>() {
+    private Observer<Gift> mTomGiftBox = new Observer<Gift>() {
         @Override
         public void onReceive(@NonNull Gift event) {
             String msg = "received a " + event.getName();
-            mTomMsgBox.setText(msg);
+            mTomMsgBoxEt.setText(msg);
         }
     };
 
-    private Observer<TomMessage> mJerryMsgBoxObserver = new Observer<TomMessage>() {
+    private Observer<TomMessage> mJerryMsgBox = new Observer<TomMessage>() {
         @Override
         public void onReceive(@NonNull TomMessage event) {
-            mJerryMsgBox.setText(event.getContent());
+            mJerryMsgBoxEt.setText(event.getContent());
         }
     };
 
-    private Observer<Gift> mJerryGiftObserver = new Observer<Gift>() {
+    private Observer<Gift> mJerryGiftBox = new Observer<Gift>() {
         @Override
         public void onReceive(@NonNull Gift event) {
             String msg = "received a " + event.getName();
-            mJerryMsgBox.setText(msg);
+            mJerryMsgBoxEt.setText(msg);
         }
     };
 }

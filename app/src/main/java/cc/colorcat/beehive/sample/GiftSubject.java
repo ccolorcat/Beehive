@@ -52,9 +52,9 @@ class GiftSubject extends HandlerSubject<Gift> {
             public void run() {
                 super.run();
                 while (mContinueGift) {
+                    SystemClock.sleep(3000);
                     mIndex = (mIndex + 1) % mGiftName.length;
                     notifyChanged();
-                    SystemClock.sleep(3000);
                 }
             }
         }.start();
