@@ -46,10 +46,10 @@ public class Bus implements Observable {
      * key —— eventType
      * value —— the instance of eventType
      */
-    private final LruCache<Class<?>, Object> cachedEvent;
+    private final LruCache<Class<?>, Object> cachedEvents;
 
     public Bus(int maxCachedEvent) {
-        this.cachedEvent = new LruCache<>(maxCachedEvent);
+        this.cachedEvents = new LruCache<>(maxCachedEvent);
     }
 
     public void post(@NonNull Object event) {
@@ -59,7 +59,7 @@ public class Bus implements Observable {
     public void post(@NonNull Object event, boolean cache) {
         Class<?> eventType = event.getClass();
         if (cache) {
-            cachedEvent.put(eventType, event);
+            cachedEvents.put(eventType, event);
         }
         Collection<Observer> observers = findObservers(eventType);
         dispatchNewEvent(observers, event);
@@ -121,12 +121,12 @@ public class Bus implements Observable {
     @Override
     public void clear() {
         observers.clear();
-        cachedEvent.evictAll();
+        cachedEvents.evictAll();
     }
 
     private Collection<Object> findCachedEvents(@NonNull Class<?> receiveType) {
         Collection<Object> cachedEvents = new LinkedList<>();
-        for (Map.Entry<Class<?>, Object> entry : this.cachedEvent.snapshot().entrySet()) {
+        for (Map.Entry<Class<?>, Object> entry : this.cachedEvents.snapshot().entrySet()) {
             if (receiveType.isAssignableFrom(entry.getKey())) {
                 cachedEvents.add(entry.getValue());
             }
