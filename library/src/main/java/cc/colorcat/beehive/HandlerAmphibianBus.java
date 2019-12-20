@@ -42,6 +42,10 @@ public class HandlerAmphibianBus extends HandlerBus {
         bridge = new Bridge(this, context, receiverPackageName);
     }
 
+    public void setReceiverPackageName(String receiverPackageName) {
+        bridge.setReceiverPackageName(receiverPackageName);
+    }
+
     public void postAmphibian(@NonNull Parcelable event) {
         postAmphibian(event, false);
     }

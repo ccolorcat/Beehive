@@ -23,6 +23,7 @@ import android.content.IntentFilter;
 import android.os.Parcelable;
 import android.os.Process;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -36,10 +37,15 @@ import java.util.UUID;
  */
 final class Bridge {
     private static final String ACTION = "cc.colorcat.beehive.bridge";
-    private static final String UNIQUE = "bridge_unique_id";
-    private static final String CACHE = "bridge_need_cache";
-    private static final String CONTENT = "bridge_content";
-    private static final String PID = "bridge_pid";
+    private static final String UNIQUE = "unique";
+    private static final String CACHE = "cache";
+    private static final String CONTENT = "content";
+    /**
+     * true  -> {@link Parcelable}
+     * false -> {@link Serializable}
+     */
+    private static final String CONTENT_TYPE = "type";
+    private static final String PID = "pid";
 
     private final String unique = UUID.randomUUID().toString();
     private final Bus bus;
@@ -58,22 +64,23 @@ final class Bridge {
     }
 
     void postParcelableEvent(@NonNull Parcelable event, boolean cache) {
-        Intent intent = createIntent(cache);
+        Intent intent = createIntent(cache, true);
         intent.putExtra(CONTENT, event);
         context.sendBroadcast(intent);
     }
 
     void postSerializableEvent(@NonNull Serializable event, boolean cache) {
-        Intent intent = createIntent(cache);
+        Intent intent = createIntent(cache, false);
         intent.putExtra(CONTENT, event);
         context.sendBroadcast(intent);
     }
 
-    private Intent createIntent(boolean cache) {
+    private Intent createIntent(boolean cache, boolean isParcelable) {
         Intent intent = new Intent(ACTION);
         intent.putExtra(UNIQUE, this.unique);
-        intent.putExtra(PID, String.valueOf(Process.myPid()));
         intent.putExtra(CACHE, cache);
+        intent.putExtra(CONTENT_TYPE, isParcelable);
+        intent.putExtra(PID, String.valueOf(Process.myPid()));
         if (receiverPackageName != null) {
             intent.setPackage(receiverPackageName);
         }
@@ -114,14 +121,15 @@ final class Bridge {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (isValidEvent(intent)) {
-                Object data = intent.getParcelableExtra(CONTENT);
-                if (data == null) {
-                    data = intent.getSerializableExtra(CONTENT);
-                }
+            try {
+                if (!isValidEvent(intent)) return;
+                boolean isParcelable = intent.getBooleanExtra(CONTENT_TYPE, false);
+                Object data = isParcelable ? intent.getParcelableExtra(CONTENT) : intent.getSerializableExtra(CONTENT);
                 if (data != null) {
                     bus.post(data, intent.getBooleanExtra(CACHE, false));
                 }
+            } catch (Throwable e) {
+                Utils.printLog(Log.ERROR, e.toString());
             }
         }
 
